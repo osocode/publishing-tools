@@ -1,275 +1,237 @@
 # Publishing Tools
 
-This repository contains automation tools and utilities for managing and publishing content across multiple platforms.
+A comprehensive set of tools for automating content publishing across multiple platforms. This repository works in conjunction with the content-hub repository to manage and publish technical, leadership, and educational content.
 
 ## Repository Structure
-
-# publishing-tools/ Repository Structure
 
 ```plaintext
 publishing-tools/
 ├── src/
 │   ├── automation/                    # Core automation logic
-│   │   ├── platformAutomation.js     # Main platform automation class
-│   │   ├── LinkedInHandler.js        # LinkedIn-specific automation
-│   │   ├── YouTubeHandler.js         # YouTube-specific automation
-│   │   └── BlogHandler.js            # Blog publishing automation
+│   │   ├── platformAutomation.js     # Main automation class
+│   │   ├── LinkedInHandler.js        # LinkedIn publishing
+│   │   ├── YouTubeHandler.js         # YouTube publishing
+│   │   └── BlogHandler.js            # Blog publishing
 │   │
 │   ├── config/                       # Configuration files
-│   │   ├── default.js               # Default configuration
-│   │   ├── production.js            # Production overrides
+│   │   ├── default.js               # Default settings
+│   │   ├── production.js            # Production settings
 │   │   ├── local.js                # Local development settings
 │   │   └── index.js                # Configuration loader
 │   │
 │   ├── services/                    # Core services
-│   │   ├── imageProcessor.js        # Image optimization and conversion
-│   │   ├── contentValidator.js      # Content validation logic
-│   │   └── metricsCollector.js      # Analytics and metrics
+│   │   ├── imageProcessor.js        # Image optimization
+│   │   ├── contentValidator.js      # Content validation
+│   │   └── metricsCollector.js      # Analytics collection
 │   │
-│   ├── utils/                       # Utility functions
-│   │   ├── markdown.js             # Markdown processing utilities
-│   │   ├── frontmatter.js         # Frontmatter handling
-│   │   └── logger.js              # Logging utility
-│   │
-│   └── index.js                    # Main entry point
+│   └── utils/                       # Utility functions
+│       ├── markdown.js             # Markdown processing
+│       └── frontmatter.js         # Frontmatter handling
 │
-├── scripts/                         # CLI and automation scripts
-│   ├── publish-content.js          # Content publishing script
-│   ├── optimize-images.js          # Image optimization script
-│   └── generate-metrics.js         # Metrics generation script
+├── scripts/                         # CLI scripts
+│   ├── publish-content.js          # Content publishing
+│   ├── optimize-images.js          # Image optimization
+│   └── generate-metrics.js         # Metrics generation
 │
-├── workflows/                       # GitHub Actions workflows
-│   ├── content-publish.yml         # Content publishing workflow
-│   ├── image-optimize.yml          # Image optimization workflow
-│   └── metrics-collect.yml         # Metrics collection workflow
-│
-├── tests/                          # Test files
-│   ├── automation/
-│   ├── services/
-│   └── utils/
-│
-├── config/                         # Environment configuration
-│   ├── default.js                 # Default settings
-│   ├── production.js              # Production settings
-│   └── local.js                  # Local development settings
+├── .github/workflows/              # GitHub Actions
+│   ├── content-publish.yml        # Publishing pipeline
+│   ├── image-optimize.yml         # Image optimization
+│   └── metrics-collect.yml        # Metrics collection
 │
 ├── docs/                          # Documentation
-│   ├── automation/
-│   ├── configuration/
-│   └── workflows/
-│
-├── .github/                       # GitHub specific files
-│   └── workflows/                # GitHub Actions configurations
-│
-├── package.json                   # Node.js package file
-├── tsconfig.json                 # TypeScript configuration
-├── .env.example                  # Environment variables template
-├── .gitignore                    # Git ignore rules
-├── README.md                     # Repository documentation
-└── docker-compose.yml            # Docker compose configuration
+├── tests/                         # Test files
+└── [Configuration Files]          # See Configuration section
 ```
 
-## Key Components Explanation
+## Configuration Files
 
-### 1. Automation Core (`src/automation/`)
-Contains all the platform-specific automation logic we created:
-```javascript
-// src/automation/platformAutomation.js
-import { LinkedInHandler } from './LinkedInHandler';
-import { YouTubeHandler } from './YouTubeHandler';
-import { BlogHandler } from './BlogHandler';
+### Root Level
+- `.env.example` - Environment variables template
+- `.gitignore` - Git ignore patterns
+- `.eslintrc.js` - ESLint configuration
+- `.dockerignore` - Docker ignore patterns
+- `docker-compose.yml` - Docker compose configuration
+- `Dockerfile` - Docker build instructions
+- `jest.config.js` - Testing configuration
+- `nodemon.json` - Development server settings
+- `package.json` - NPM configuration
+- `tsconfig.json` - TypeScript configuration
 
-export class PlatformAutomation {
-    // Our previously created automation code goes here
-}
+### VS Code Settings
+- `.vscode/settings.json` - Editor settings
+- `.vscode/extensions.json` - Recommended extensions
+
+### Application Configuration
+Located in `src/config/`:
+- `default.js` - Base configuration
+- `production.js` - Production overrides
+- `local.js` - Local development settings
+- `index.js` - Configuration loader
+
+## Prerequisites
+
+- Node.js 18+
+- Access to content-hub repository
+- API keys for publishing platforms
+- Git LFS (for handling large media files)
+
+## Installation
+
+1. Clone the repository:
+```bash
+git clone git@github.com:username/publishing-tools.git
+cd publishing-tools
 ```
 
-### 2. Configuration (`src/config/`)
-All configuration files we created earlier:
-```javascript
-// src/config/index.js
-import defaultConfig from './default';
-import productionConfig from './production';
-import localConfig from './local';
-
-const env = process.env.NODE_ENV || 'development';
-
-const configs = {
-    development: localConfig,
-    production: productionConfig
-};
-
-export default {
-    ...defaultConfig,
-    ...(configs[env] || {})
-};
+2. Install dependencies:
+```bash
+npm install
 ```
 
-### 3. GitHub Workflows (`.github/workflows/`)
-```yaml
-# .github/workflows/content-publish.yml
-name: Content Publishing Pipeline
-# Our previously created workflow configurations go here
+3. Set up environment variables:
+```bash
+cp .env.example .env
+# Edit .env with your settings
 ```
 
-### 4. Service Integration Example
-```javascript
-// src/services/imageProcessor.js
-import sharp from 'sharp';
-import config from '../config';
-
-export class ImageProcessor {
-    constructor(config) {
-        this.config = config.images;
-    }
-
-    async optimize(imagePath, options = {}) {
-        // Image optimization logic
-    }
-}
-```
-
-### 5. CLI Scripts Example
-```javascript
-// scripts/publish-content.js
-#!/usr/bin/env node
-import { PlatformAutomation } from '../src/automation/platformAutomation';
-import config from '../src/config';
-
-async function main() {
-    const automation = new PlatformAutomation(config);
-    // Publishing logic
-}
-
-main().catch(console.error);
+4. Link to content-hub:
+```bash
+# Update CONTENT_HUB_PATH in .env to point to your content-hub directory
+CONTENT_HUB_PATH="../content-hub"
 ```
 
 ## Usage
 
-1. Run automations:
+### Development
 ```bash
-# Start the automation service
-npm start
-
-# Run specific scripts
-npm run publish
-npm run optimize
-```
-
-2. Development:
-```bash
-# Start in development mode
+# Start development server
 npm run dev
 
 # Run tests
 npm test
+
+# Lint code
+npm run lint
 ```
 
-3. Configuration:
+### Content Publishing
 ```bash
-# Copy environment template
-cp .env.example .env
+# Validate content
+npm run validate
 
-# Edit configuration
-nano src/config/local.js
-```
+# Publish content
+npm run publish
 
-The separation of concerns is:
-- Core automation logic in `src/automation/`
-- Configuration in `src/config/`
-- Utility functions in `src/utils/`
-- CLI scripts in `scripts/`
-- GitHub workflows in `.github/workflows/`
-
-This structure keeps the automation code organized and maintainable while providing clear separation between different components of the system.
-
-## Features
-
-### Current Tools
-1. Image Optimization
-   - Automatic image resizing
-   - Platform-specific optimization
-   - WebP conversion
-
-2. Content Formatting
-   - LinkedIn post splitter
-   - Markdown to HTML conversion
-   - Frontmatter processor
-
-### Planned Features
-- Automated publishing to multiple platforms
-- Analytics collection and reporting
-- SEO optimization tools
-- Content calendar management
-- Automated link checking
-- Cross-reference validation
-
-## Setup and Configuration
-
-### Prerequisites
-- Node.js 18+
-- Python 3.8+
-- Required API keys (see `config/example.env`)
-
-### Installation
-```bash
-npm install
-python -m pip install -r requirements.txt
-```
-
-### Configuration
-1. Copy `config/example.env` to `.env`
-2. Add required API keys and credentials
-3. Customize platform settings in `config/platforms/`
-
-## Usage
-
-### Basic Commands
-```bash
 # Optimize images
-npm run optimize-images
+npm run optimize
 
-# Split post for LinkedIn
-npm run split-post <filename>
-
-# Publish to platform
-npm run publish <platform> <filename>
+# Collect metrics
+npm run metrics
 ```
 
-### Workflows
-1. Content Preparation
-   ```bash
-   npm run prepare-content <filename>
-   ```
-
-2. Publishing
-   ```bash
-   npm run publish-all <filename>
-   ```
-
-## Development
-
-### Adding New Tools
-1. Create new script in appropriate directory
-2. Update configuration as needed
-3. Add documentation
-4. Create tests
-5. Submit PR
-
-### Testing
+### Docker Support
 ```bash
-npm test
+# Build and run with Docker
+docker-compose up --build
 ```
+
+## Platform Support
+
+Currently supports publishing to:
+- Personal blog/website
+- LinkedIn (articles and posts)
+- YouTube
+- Internal documentation systems
+
+## Configuration Guide
+
+### Environment Variables
+Required environment variables:
+```bash
+# Content Hub Settings
+CONTENT_HUB_PATH=       # Path to content-hub repository
+
+# API Keys
+LINKEDIN_API_KEY=       # LinkedIn API credentials
+YOUTUBE_API_KEY=        # YouTube API credentials
+BLOG_API_TOKEN=         # Blog publishing token
+
+# Publishing Settings
+REQUIRE_REVIEW=         # Enable/disable review requirement
+AUTO_PUBLISH=           # Enable/disable auto publishing
+```
+
+### Platform Configuration
+Configure platform-specific settings in `src/config/default.js`:
+```javascript
+module.exports = {
+  platforms: {
+    linkedin: {
+      // LinkedIn-specific settings
+    },
+    youtube: {
+      // YouTube-specific settings
+    }
+  }
+}
+```
+
+## Adding New Platforms
+
+1. Create a new handler in `src/automation/`:
+```javascript
+// NewPlatformHandler.js
+export class NewPlatformHandler {
+  // Implementation
+}
+```
+
+2. Add platform configuration in `src/config/default.js`
+3. Create platform-specific tests
+4. Update documentation
 
 ## Contributing
+
 1. Fork the repository
-2. Create feature branch
-3. Commit changes
-4. Submit PR
+2. Create a feature branch
+3. Add tests for new features
+4. Submit a pull request
+
+## Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run specific tests
+npm test -- --grep "platform name"
+
+# Run with coverage
+npm run test:coverage
+```
+
+## Documentation
+
+- `/docs/automation/` - Automation documentation
+- `/docs/configuration/` - Configuration guide
+- `/docs/workflows/` - GitHub Actions workflows
+
+## Troubleshooting
+
+Common issues and solutions are documented in `/docs/troubleshooting.md`
 
 ## License
-MIT
+
+[Your chosen license]
+
+## Support
+
+- Open an issue for bugs
+- See documentation for guides
+- Contact team for urgent issues
+
+Remember to never commit sensitive information or API keys to the repository.
 
 ---
 
-This toolset will evolve based on content creation and publishing needs.
+For more detailed information about specific components, check the documentation in the `/docs` directory.
